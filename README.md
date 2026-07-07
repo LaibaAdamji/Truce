@@ -6,6 +6,9 @@ Set up backend :
     venv\Scripts\activate
     pip install -r requirements.txt`
 
+Set up frontend:
+`streamlit run app.py`
+
 ### Folder Structure:
 Note: This is very tentative for now and can/will be changed as required throughout the week 
 
