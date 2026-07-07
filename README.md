@@ -29,6 +29,8 @@ project-root/
 │   └── llm_client.py         ← wrapper around Fireworks/Gemma calls
 ├── crew.py                   ← wires the 3 agents into one CrewAI pipeline
 ├── app.py                    ← Streamlit frontend / UI
+├── auth/
+│   └── session.py            ←signup/login        
 ├── config/
 │   └── settings.py           ← reads env vars, exposes typed settings
 ├── seed/
