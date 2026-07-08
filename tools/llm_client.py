@@ -1,11 +1,17 @@
 # tools/llm_client.py
 
+import sys
 import time
 import requests
 from config.settings import settings
 from db.operations import log_gemma_call
 
 LLM_URL = f"{settings.LLM_BASE_URL.rstrip('/')}/chat/completions"
+
+
+def _debug_print(message: str) -> None:
+    """Write debug output safely on Windows consoles (UTF-8, replacement chars)."""
+    sys.stdout.buffer.write(message.encode("utf-8", errors="replace") + b"\n")
 
 
 class GemmaCallError(Exception):
@@ -69,8 +75,8 @@ def call_gemma(
             timeout=30,
         )
 
-        print("Status:", resp.status_code)
-        print(resp.text)
+        _debug_print(f"Status: {resp.status_code}")
+        _debug_print(resp.text)
 
         try:
             resp.raise_for_status()
