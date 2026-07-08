@@ -1,0 +1,82 @@
+[
+  {
+    "skill": "web development",
+    "text": "Full-stack web developer (React/Node), 3 yrs experience — $45/hr, mid-size SaaS client"
+  },
+  {
+    "skill": "web development",
+    "text": "Frontend developer (React/Tailwind), 2 yrs experience — $38/hr, startup landing page project"
+  },
+  {
+    "skill": "web development",
+    "text": "Backend developer (Node/Postgres), 4 yrs experience — $55/hr, e-commerce API build"
+  },
+  {
+    "skill": "web development",
+    "text": "Full-stack developer (Django/React), 5 yrs experience — $60/hr, enterprise internal tool"
+  },
+  {
+    "skill": "mobile development",
+    "text": "iOS developer (Swift), 3 yrs experience — $50/hr, fitness app MVP"
+  },
+  {
+    "skill": "mobile development",
+    "text": "Cross-platform developer (React Native), 2 yrs experience — $42/hr, small business app"
+  },
+  {
+    "skill": "mobile development",
+    "text": "Android developer (Kotlin), 4 yrs experience — $52/hr, retail app feature build"
+  },
+  {
+    "skill": "data engineering",
+    "text": "Data engineer (Python/Airflow), 3 yrs experience — $58/hr, ETL pipeline consulting"
+  },
+  {
+    "skill": "data engineering",
+    "text": "Data engineer (Spark/SQL), 5 yrs experience — $65/hr, analytics warehouse migration"
+  },
+  {
+    "skill": "machine learning",
+    "text": "ML engineer (PyTorch), 3 yrs experience — $70/hr, recommendation system prototype"
+  },
+  {
+    "skill": "machine learning",
+    "text": "ML engineer (scikit-learn/NLP), 2 yrs experience — $55/hr, text classification project"
+  },
+  {
+    "skill": "devops",
+    "text": "DevOps engineer (AWS/Terraform), 4 yrs experience — $60/hr, infra setup + CI/CD"
+  },
+  {
+    "skill": "devops",
+    "text": "DevOps engineer (Docker/Kubernetes), 3 yrs experience — $55/hr, containerization project"
+  },
+  {
+    "skill": "design",
+    "text": "UI/UX designer (Figma), 3 yrs experience — $40/hr, SaaS dashboard redesign"
+  },
+  {
+    "skill": "design",
+    "text": "Product designer (Figma/Webflow), 4 yrs experience — $48/hr, marketing site + design system"
+  },
+  {
+    "skill": "writing",
+    "text": "Technical writer, 3 yrs experience — $35/hr, API documentation project"
+  },
+  {
+    "skill": "writing",
+    "text": "Copywriter, 2 yrs experience — $30/hr, product landing page copy"
+  },
+  {
+    "skill": "qa",
+    "text": "QA engineer (manual + automated), 3 yrs experience — $38/hr, regression suite build"
+  },
+  {
+    "skill": "qa",
+    "text": "QA automation engineer (Selenium/Playwright), 4 yrs experience — $45/hr, test framework setup"
+  },
+  {
+    "skill": "general software",
+    "text": "Generalist software engineer, 3 yrs experience — $48/hr, mixed backend/frontend contract"
+  }
+]
