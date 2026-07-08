@@ -4,7 +4,7 @@ Multi-agent AI negotiator that turns a messy freelance brief into a signed scope
 Set up backend :
     `python -m venv venv 
     venv\Scripts\activate
-    pip install -r requirements.txt`
+    pip install -r requirements.txt --progress-bar on`
 
 Set up frontend:
 `streamlit run app.py`
