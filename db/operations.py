@@ -128,6 +128,9 @@ def create_new_version(project_id: str) -> dict | None:
 def save_requirement(data: dict) -> dict | None:
     return _insert("requirements", data)
 
+def update_requirement(requirement_id: str, data: dict) -> dict | None:
+    return _update("requirements", "requirement_id", requirement_id, data)
+
 def get_requirements_by_version(version_id: str) -> list[dict]:
     return _get_all_by_fk("requirements", "version_id", version_id)
 
@@ -387,3 +390,7 @@ def get_notifications_by_user(user_id: str, unread_only: bool = False) -> list[d
 
 def mark_notification_read(notification_id: str) -> dict | None:
     return _update("notifications", "notification_id", notification_id, {"read": True})
+
+def assign_freelancer(project_id: str, freelancer_profile_id: str) -> dict | None:
+    return _update("projects", "project_id", project_id, {"freelancer_profile_id": freelancer_profile_id})
+
