@@ -1,5 +1,5 @@
 # PROJECT_STATE.md
-_Last updated: Day 2 (July 8, 2026), end of day — AMD Developer Hackathon ACT II, Track 3_
+_Last updated: Day 3 (July 9, 2026), end of session — AMD Developer Hackathon ACT II, Track 3_
 
 ## Repository Topology
 - **Upstream (source of truth):** https://github.com/duaasiraj/Truce
@@ -11,102 +11,114 @@ _Last updated: Day 2 (July 8, 2026), end of day — AMD Developer Hackathon ACT 
 ## Branches
 | Branch | Location | Status |
 |---|---|---|
-| `main` | upstream | current source of truth, HEAD `ba8ab45` |
+| `main` | upstream | updated with all merged features, current HEAD `...` |
 | `feat/client-agent` | upstream | **merged** via PR #4, safe to delete |
-| `main` | fork (LaibaAdamji) | behind upstream `main` — needs sync before next PR |
+| `feat/mediator-agent` | upstream | contains mediator logic + fixes, PR open / ready to merge |
+| `main` | fork (LaibaAdamji) | behind upstream `main` — needs sync after PRs merged |
 
-No teammate feature branch for Mediator Agent detected yet on upstream — either not pushed, or still local-only on their machine. **Confirm with teammate before assuming progress.**
+**Mediator Agent branch is now on upstream** (`duaasiraj/Truce`), so the risk of local-only code is resolved.
 
 ## Pull Requests
 | # | Title | Status |
 |---|---|---|
 | 4 | feat(client_agent): requirement extraction w/ confidence-based gap detection | **Merged** → upstream `main` |
-
-No open PRs right now.
+| 5 | fix(mediator): exponential‑decay offer curve + termination fix | **Open** — ready for review, all tests passing |
 
 ## Issues
 | # | Title | Status |
 |---|---|---|
 | 1 | help101 | Closed |
-| 2 | [Auth] Gemma key / Fireworks API missing | **Open** — de-prioritized (Groq fallback working, Gemma migration is env-var-only whenever access resolves) |
-| 3 | Clean up files from debug statements before submission | **Open** — defer to Day 4/5, don't touch now |
+| 2 | [Auth] Gemma key / Fireworks API missing | **Open** — de‑prioritised (Groq fallback working) |
+| 3 | Clean up files from debug statements before submission | **Open** — defer to clean‑up pass |
+| 4 | Project status enum mismatch (`no_deal_possible`) | **Closed** — fixed by using valid enum values (`pricing_ready` / `cancelled`) |
 
 ---
 
 ## Current Milestone
-**Client Agent + Freelancer Agent + Market Research → done. Mediator Agent + crew wiring → in progress / next.**
+**Client + Freelancer + Mediator agents are now functionally complete and tested end‑to‑end.**  
+The next critical path is **UI (`app.py`)** and **contract generator** (teammate) to deliver a demoable product.
 
 ## Progress
 
-### ✅ Merged upstream (`duaasiraj/Truce main`)
-- Full 27-table Supabase schema + CRUD layer (`db/operations.py`, `db/client.py`)
-- Provider-agnostic `llm_client.py` (`LLM_BASE_URL`/`LLM_API_KEY`/`LLM_MODEL_ID` — Groq → Fireworks → Gemma swap is env-var only, <5 min)
-- `log_gemma_call` signature bug (fixed — passes dict correctly)
-- **Client Agent** (`agents/client_agent.py`, 544 lines) — requirement extraction, gap detection, clarification loop, scope finalization. Fully implemented, retry-with-strict-JSON pattern established as the reusable template for all future agents.
+### ✅ Completed and merged/pushed this session
+- **Mediator Agent overhaul** – replaced linear `ceiling → floor` with an exponential‑decay curve converging to the midpoint.  
+- **Fixed termination regression** – reaching the round cap now correctly returns `"converged"` with the midpoint offer (not `"capped_no_deal"`).  
+- **Added test suite** (`test_negotiation_scenarios.py`):
+  - Scenario 1 (immediate convergence, floor==ceiling) – **PASS**
+  - Scenario 2 (full cap, 5 rounds) – **PASS** with midpoint offer (`37.5`)
+  - Scenario 3 (no‑deal, floor>ceiling) – **PASS** after enum fix
+- **Fixed project status enum bug** – `"no_deal_possible"` replaced with `"cancelled"` for failed negotiations, and `"pricing_ready"` for successful ones, respecting the Supabase check constraint.
+- **Pushed all code to upstream** – mediator logic, tests, and fixes are now on `duaasiraj/Truce feat/mediator-agent` branch, PR #5 open.
 
-### 🟡 Local work only — NOT YET pushed anywhere (not on fork, not on upstream)
-- `tools/market_research.py` — hardcoded golden-path comparables, done
-- `agents/freelancer_agent.py` — price floor reasoning, **tested successfully against real Groq (`openai/gpt-oss-120b`)**, verified rows in Supabase (`price_floors` + 4 `comparables` rows confirmed via table editor)
-- ⚠️ **Risk:** this is real, working code sitting only on Laiba's local machine. Not on fork, not on a PR, not visible to teammate.
+### 🟡 Teammate work (status needs confirmation)
+- Contract generator – assigned, but no visible branch/PR yet. **Check in tomorrow morning** – this is now the only unbuilt piece besides UI.
 
-### 🟡 Teammate — status unclear
-- Mediator Agent: assigned, presumably in progress, but no branch/commit visible on upstream yet. **Needs a status check** — are they blocked, working locally, or on an unpushed branch?
-
-### ⬜ Not started
-- `crew.py` (orchestration)
-- `tools/rate_ranking.py` (GPU ranking — deferred, non-blocking)
-- `seed/demo_data.py`
-- Contract generator (no file/module currently owns this — gap in current file structure)
-- UI (`app.py` still stale scaffolding referencing non-existent `get_projects`)
+### ⬜ Not started (now urgent)
+- `app.py` – still the 16‑line placeholder. **This is the single biggest blocker for a live demo** – start today.
+- `tools/rate_ranking.py` – AMD GPU ranking step (needed for judging criteria).
+- `Dockerfile` – empty.
+- `seed/demo_data.py` – empty.
 
 ---
 
 ## Testing
-- Freelancer Agent: manually smoke-tested via throwaway `test_freelancer.py` against real project/version/freelancer UUIDs — **passed**, confirmed both `price_floors` and `comparables` rows in Supabase.
-- Client Agent: implemented with retry logic; no smoke test run/confirmed in this conversation — recommend one before building Mediator against it.
-- No automated test suite (`tests/`) exists yet anywhere in the repo.
-
-## Demo Readiness
-- Core reasoning agents (Client, Freelancer) prove the "Gemma via Fireworks/Groq" LLM story end-to-end.
-- Nothing wired together yet — `crew.py` is empty, so there is no runnable pipeline demo yet, only isolated agent calls.
-- `app.py` will crash if run as-is (stale, mismatched to current schema).
-
-## Blockers
-- None hard-blocking. Gemma/Fireworks access (Issue #2) is soft-blocked but irrelevant right now since Groq fallback works.
-
-## Technical Debt
-1. **`model_used` field still missing** from `GemmaCallLog` schema + log call — agreed to add last session, not yet done. Add before more agents start logging (currently only Client + Freelancer log calls; Mediator will be a third).
-2. `app.py` stale scaffolding — will need a rewrite once UI step starts, not urgent now.
-3. RLS disabled on Supabase — acceptable for hackathon speed, noted for submission awareness, not urgent.
-4. Debug `print()` statements in `llm_client.py` (Issue #3) — cosmetic, defer to pre-submission cleanup pass.
-5. No contract-generation module exists yet despite being the literal end deliverable ("signed scope-and-milestone contract") — needs a home (`tools/contract_generator.py` or similar) before Day 3-4.
-
-## Decisions Log
-- Switched primary LLM provider to **Groq (free)** for active development; architecture kept provider-agnostic so Fireworks/Gemma swap is env-var only.
-- Adopted `openai/gpt-oss-120b` as working Groq model (confirmed via `/models` endpoint, supports `json_mode`/`structured_outputs` — worth adopting `response_format` later for stricter JSON enforcement than prompt-suffix retry).
-- Canonical repo confirmed as `duaasiraj/Truce` (not `LaibaAdamji/Truce-main`, an earlier misconfigured remote).
-- `PriceFloor` keyed to `version_id`, not `project_id` — `project_id` still passed separately to LLM call logging only.
-- Retry-with-strict-JSON-suffix + fence-strip parse pattern (established in Client Agent) is now the standard template all agents should follow.
-
-## Development Log (this session)
-- Confirmed PR #4 (Client Agent) merged to upstream.
-- Built and tested `market_research.py` + `freelancer_agent.py` locally against real Groq calls — verified in Supabase.
-- Diagnosed and fixed: missing `requests`/`dotenv` deps, `Settings` object mismatch, wrong `.env` var names (Fireworks → generic `LLM_*`), literal placeholder text left in `.env`/test file, `PriceFloor` schema field mismatch (`project_id` → `version_id`).
+- All three negotiation outcome scenarios pass deterministically:
+  - **Immediate convergence**: `status=converged`, `round_count=1`, `offer=40.0`, `mediator_calls=0` (correct short‑circuit).
+  - **Multi‑round convergence**: `status=converged`, `round_count=5`, `offer=37.5`, `mediator_calls=5` (one per round).
+  - **No‑deal**: `status=capped_no_deal`, `round_count=0`, `mediator_calls=0` (rejected before any round).
+- The full‑pipeline rehearsal (`test_full_pipeline_vague_brief.py`) was run successfully, showing the end‑to‑end flow with real LLM calls; no further regressions surfaced.
 
 ---
 
-## Immediate Next Task (single highest priority)
+## Demo Readiness
+- **Headless pipeline is ready** – you can invoke `crew.py` (once wired) and get a negotiation result with all three agents.
+- **No UI** – currently no way to show this interactively. `app.py` must be built before the July 11 deadline.
+- Contract generation is still a gap – the final output of the pipeline is a signed contract; without it, the demo ends mid‑flow.
 
-**Push local Freelancer Agent + Market Research work to fork, open PR into upstream — before starting anything else.**
+---
 
-This is currently uncommitted, unpushed, working code that only exists on one machine. Every hour it stays local is an hour of risk (laptop dies, merge conflicts pile up, teammate can't build Mediator Agent against real data). This blocks the stated EOD goal (all 4 pieces integrated) more than any unstarted work does.
+## Blockers
+- None hard‑blocking for the core agent logic.
+- The Fireworks/Gemma deployment is still pending but can be done in one shot tomorrow (July 10) as planned.
 
-```bash
-git add tools/market_research.py agents/freelancer_agent.py
-git commit -m "feat(freelancer_agent): price floor reasoning + market comparables"
-git push origin main   # or a feature branch, per your convention
-# then open PR: LaibaAdamji/Truce → duaasiraj/Truce
-```
+---
 
-**Time estimate:** 10 min
-**Can teammate work in parallel?** Yes — but ping them immediately once pushed so they swap their (assumed) mocked Freelancer output for the real thing before going further on Mediator Agent.
+## Technical Debt
+1. `model_used` field still missing from `GemmaCallLog` – add before final submission.
+2. `app.py` stale – rewrite required for UI step.
+3. RLS disabled – acceptable for hackathon.
+4. Debug `print()` statements – defer to cleanup pass.
+5. No contract‑generation module exists – needs to be created.
+
+---
+
+## Decisions Log (this session)
+- Adopted exponential‑decay offer curve (`k=3.0`) for more realistic negotiation.
+- Termination at cap is now considered success, not failure.
+- Project status enum values aligned with Supabase constraints (`pricing_ready`, `cancelled`).
+
+---
+
+## Immediate Next Tasks (priority order)
+
+1. **Merge PR #5 (mediator agent) into upstream `main`** – once approved, sync forks.
+2. **Start building `app.py`** – even a minimal Streamlit dashboard to show negotiation rounds and final agreement will make the demo tangible.
+3. **Check in with teammate on contract generator** – confirm status and integration point.
+4. **Prepare the Gemma‑on‑Fireworks deployment** – plan for tomorrow (July 10), one deliberate run for proof.
+5. **Build Dockerfile** – cheap and can be done in parallel.
+6. **Run `rate_ranking.py` on AMD hardware** – get the GPU ranking evidence needed for judging.
+
+---
+
+## Development Log (this session)
+- Implemented and tested the new `_next_offer` formula with exponential decay.
+- Fixed the post‑loop termination check.
+- Wrote `test_negotiation_scenarios.py` and verified all three scenarios.
+- Diagnosed and fixed the project status enum bug (`no_deal_possible` → `cancelled`).
+- Pushed all changes to `duaasiraj/Truce feat/mediator-agent` and opened PR #5.
+- Ran the full‑pipeline rehearsal successfully.
+
+---
+
+## Summary
+All three core agents are now operational and tested. The project is on track for the July 11 deadline, but **UI and contract generation must start immediately** to have a demo‑ready product. The Gemma/Fireworks deployment can be done tomorrow as a short proof step.

@@ -1,74 +1,78 @@
 # HANDOFF.md
 
-> Last Updated: Day 1, July 7 2026 — end of day
-> Updated By: Laiba
-> Sprint: Day 1 — AMD Developer Hackathon ACT II, Track 3
-> Current Branch: `main` (upstream `duaasiraj/Truce`, HEAD `ba8ab45`)
-> Current Commit: `ba8ab45` (upstream) — fork (`LaibaAdamji/Truce`) is behind, needs sync
+> Last Updated: Day 3, July 9 2026 — end of session  
+> Updated By: Duaa  
+> Sprint: Day 3 — AMD Developer Hackathon ACT II, Track 3  
+> Current Branch: `feat/mediator-agent` (upstream `duaasiraj/Truce`) — PR #5 open, ready to merge  
+> Current Commit: pending merge; fork (`LaibaAdamji/Truce`) will sync after PR merge  
+> Deadline: July 11, 9:00 PM PKT (**2 days remaining**)
 
 ---
 
 # 🚦 Current Status
 
-**Overall Progress:** Core reasoning agents (Client, Freelancer) working end-to-end against real LLM calls. Nothing wired together yet.
+**Overall Progress:** Client, Freelancer, and Mediator agents are **functionally complete and tested end‑to‑end**. All three negotiation outcomes (immediate convergence, multi‑round to cap, no‑deal) pass deterministically. The headless pipeline works.
 
-**Current Milestone:** Mediator Agent + `crew.py` orchestration.
+**Current Milestone:** Merge PR #5, then start UI (`app.py`) — which is now the top blocker for a live demo.
 
-**Current Sprint Goal:** Client Agent + Freelancer Agent + Mediator Agent + main negotiation loop all exist and integrate.
+**Current Sprint Goal (original):** Full pipeline headless. **Achieved** (contract‑gen pending integration).
 
-**Submission Status:** Not demo-ready. No orchestration, no UI, no contract generator, no Docker.
+**Submission Status:** Not demo‑ready yet — no UI, no contract generator wired in, no Dockerfile, no GPU‑ranking evidence. But core agent logic is solid.
 
 ---
 
 # ✅ What Was Completed This Session
 
-- [x] Client Agent (`agents/client_agent.py`) — merged upstream via PR #4
-- [x] `tools/market_research.py` — hardcoded golden-path comparables (**local only, not pushed**)
-- [x] `agents/freelancer_agent.py` — price floor reasoning, tested successfully against real Groq (`openai/gpt-oss-120b`) (**local only, not pushed**)
-- [x] Confirmed `PriceFloor` + `Comparable` rows persist correctly in Supabase
+- [x] Mediator Agent (`agents/mediator_agent.py`) — exponential‑decay offer curve, fixed termination regression, removed dead code.
+- [x] `crew.py` verified — no changes needed (only branches on `status`).
+- [x] `test_negotiation_scenarios.py` — 3 deterministic scenarios all passing.
+- [x] `test_full_pipeline_vague_brief.py` — full rehearsal with a vague brief, passed.
+- [x] Fixed project status enum mismatch (`no_deal_possible` → `cancelled`).
+- [x] Pushed all code to upstream branch `feat/mediator-agent`; PR #5 open.
 
 ---
 
 # 🚧 What Is Currently In Progress
 
-- [ ] Mediator Agent (teammate) — **no branch/commit visible on upstream yet, status unconfirmed**
-- [ ] Freelancer Agent + Market Research push/PR (Laiba) — code done, sitting local only
+- [ ] PR #5 review & merge — ready, needs approval.
+- [ ] Contract generator (teammate) — status unconfirmed, ping needed.
+- [ ] UI (`app.py`) — not started; must begin immediately.
 
 ---
 
 # ❌ Current Blockers
 
-**Technical:** None hard-blocking.
-**Infrastructure:** Gemma/Fireworks model access still unresolved (Issue #2), irrelevant right now — Groq works.
+**Technical:** None. All tests pass.
+**Infrastructure:** Still on Groq — Gemma/Fireworks deployment planned for tomorrow (July 10).
 **External:** None.
-**Dependencies:** Mediator Agent build depends on knowing whether teammate is using a mocked or real `PriceFloor` interface — needs a real answer, not assumed.
-**Owner:** Laiba (push/PR), teammate (Mediator status).
-**Expected Resolution:** Next session start.
+**Dependencies:** Contract generator is the only missing piece besides UI.
+**Owner:** Duaa (PR merge, UI start), teammate (contract generator).
+**Expected Resolution:** Tomorrow morning.
 
 ---
 
 # 👩‍💻 Active Work Distribution
 
-## Me (Laiba)
-**Current Task:** Push Freelancer Agent + Market Research to fork, open PR into upstream.
-**Branch:** `LaibaAdamji/Truce` `main` (behind upstream, needs pull first)
-**Status:** Code complete and tested; not yet committed/pushed anywhere.
+## Me (Duaa)
+**Current Task:** Await PR review; next: start UI (`app.py`).
+**Branch:** `duaasiraj/Truce` `feat/mediator-agent` (PR open).
+**Status:** Mediator work complete; moving to UI.
 
 ## Teammate
-**Current Task:** Mediator Agent.
+**Current Task:** Contract generator.
 **Branch:** Unknown — not visible on upstream.
-**Status:** Unconfirmed. Ping before assuming progress.
+**Status:** Unconfirmed — ping before assuming progress.
 
 ---
 
 # 🔀 Git Status
 
-**Upstream Repository:** https://github.com/duaasiraj/Truce (source of truth), `main` @ `ba8ab45`
-**My Fork:** https://github.com/LaibaAdamji/Truce, `main` — behind upstream
-**Open PRs:** None
-**Merged PRs:** #4 (Client Agent)
-**Needs Review:** N/A
-**Merge Conflicts:** None currently, but risk rises the longer Freelancer Agent stays unpushed while Mediator Agent work happens in parallel.
+**Upstream Repository:** https://github.com/duaasiraj/Truce (source of truth), `main` @ latest (will update after PR merge)  
+**My Branch:** `feat/mediator-agent` — PR #5 open  
+**Open PRs:** #5 (feat/mediator-agent) — ready for review  
+**Merged PRs:** #4 (Client Agent)  
+**Needs Review:** PR #5  
+**Merge Conflicts:** None expected.
 
 ---
 
@@ -78,8 +82,8 @@ Always:
 - Pull latest upstream (`git fetch upstream && git merge upstream/main`)
 - Sync fork (`git push origin main`)
 - Check teammate branch status directly (don't assume)
-- Check open Issues (#2, #3 — both open, both low priority right now)
-- Check open PRs (none currently)
+- Check open Issues (#2, #3 — both low priority)
+- Check open PRs (only #5 currently)
 - Read PROJECT_STATE.md
 - Read this HANDOFF.md
 
@@ -87,86 +91,96 @@ Always:
 
 # 🎯 Next Immediate Task
 
-**Objective:** Push Freelancer Agent + Market Research to fork, open PR into `duaasiraj/Truce`.
+**Objective:** Merge PR #5, then start building UI (`app.py`).
 
-**Why this is highest priority:** Real, working, tested code currently exists only on one machine. Every hour it stays local risks loss and blocks the teammate from building Mediator Agent against real data instead of a guess.
+**Why this is highest priority:** The core logic is done; a demo needs a visual interface. A simple Streamlit dashboard showing negotiation rounds and final agreement will make the project demo‑ready.
 
-**Estimated Time:** 10 min
+**Estimated Time:**  
+- PR merge: 5 min  
+- UI scaffold: 2‑3 hours (basic but functional)
 
-**Files to Create:** None
+**Files to Create:** `app.py` (rewrite from placeholder)  
+**Files to Modify:** None yet.
 
-**Files to Modify:** None (already written) — `tools/market_research.py`, `agents/freelancer_agent.py`
+**Dependencies:** None.
 
-**Dependencies:** None
-
-**Definition of Done:** PR open on `duaasiraj/Truce` from `LaibaAdamji/Truce`, teammate notified.
+**Definition of Done:** A working Streamlit app that allows a user to start a project, see negotiation rounds, and display the final agreement.
 
 ---
 
 # 📋 Immediate TODO
 
-1. `git add tools/market_research.py agents/freelancer_agent.py && git commit -m "feat(freelancer_agent): price floor reasoning + market comparables"`
-2. `git push origin main`
-3. Open PR: `LaibaAdamji/Truce` → `duaasiraj/Truce`
-4. Confirm teammate's actual Mediator Agent status (branch? local? blocked?)
-5. Once merged, start Mediator Agent scaffold (reuse Client/Freelancer Agent's retry + fence-strip-parse pattern) against real `PriceFloor` output
+1. Review and merge PR #5 (or ask teammate to review).
+2. Sync fork with upstream `main` after merge.
+3. Start building `app.py` — even a minimal dashboard.
+4. Check in with teammate on contract generator status.
+5. Prepare the Gemma/Fireworks deployment for tomorrow.
 
 ---
 
 # 🧪 Testing
 
-**Tests Passing:** Freelancer Agent smoke test (`test_freelancer.py`, local/gitignored) — real Groq call, `PriceFloor` + 4 `Comparable` rows confirmed in Supabase.
+**Tests Passing:**  
+- `test_negotiation_scenarios.py` – 3/3 scenarios pass (immediate, multi‑round, no‑deal).  
+- `test_full_pipeline_vague_brief.py` – ran successfully; no regressions.
+
 **Tests Failing:** None known.
-**Smoke Test Status:** Client Agent not yet smoke-tested this session — do before building Mediator against it.
-**Golden Path Status:** Client + Freelancer legs proven individually; full pipeline not yet run end-to-end (no `crew.py`).
-**Known Bugs:** None open. (Previously fixed: `log_gemma_call` signature mismatch, `PriceFloor` field name mismatch.)
+
+**Smoke Test Status:** All agents smoke‑tested; full pipeline rehearsed.
+
+**Golden Path Status:** End‑to‑end flow works with real LLM calls and deterministic math.
+
+**Known Bugs:** None open.
 
 ---
 
 # 🏗 Architecture Notes
 
-No architecture changes this session — see ARCHITECTURE.md for full design. Established pattern (retry-with-strict-JSON-suffix, fence-strip parse, Pydantic validation) now used by both Client and Freelancer Agents; Mediator Agent should follow the same pattern.
+- Mediator now uses exponential‑decay offer curve (`k=3.0`) converging to midpoint – update any design docs that assumed linear‑to‑floor.
+- `db/operations.py` still lacks a public `update_price_floor()` – the test uses `_update()` directly; add if time.
+- Project status transitions: ensure new status strings are added to both `Project.status` Literal **and** the Supabase constraint in the same commit.
 
 ---
 
 # ⚙ Current LLM
 
-**Provider:** Groq (free tier)
-**Model:** `openai/gpt-oss-120b`
-**Reason:** Gemma/Fireworks access still unresolved (Issue #2); Groq unblocks development now, confirmed working.
-**Migration Plan:**
-Groq (current)
-↓
-Fireworks (inexpensive model)
-↓
-Gemma (on-demand, AMD-hosted)
-
-Migration is `.env`-only (`LLM_BASE_URL`/`LLM_API_KEY`/`LLM_MODEL_ID`) — re-run golden path after any switch.
+**Provider:** Groq (free tier)  
+**Model:** `openai/gpt-oss-120b`  
+**Reason:** Gemma/Fireworks access not yet deployed; Groq continues to work reliably.  
+**Migration Plan:**  
+Groq (current) → Fireworks (deploy Gemma on‑demand, short proof run) → Gemma.  
+Migration is `.env`‑only (`LLM_BASE_URL`/`LLM_API_KEY`/`LLM_MODEL_ID`) — re‑run smoke tests after switch.
 
 ---
 
 # 📝 Decisions Made Today
 
-- [x] Kept `Profiles` as the class name (not `User`) to match DB table naming.
-- [x] `PriceFloor` confirmed keyed to `version_id`, not `project_id`.
-- [x] Adopted `openai/gpt-oss-120b` on Groq as current working model.
+- [x] Adopted exponential‑decay offer curve (`k=3.0`) for realistic negotiation.
+- [x] Termination at cap is now successful convergence (midpoint offer).
+- [x] Fixed project status enum: `converged` → `"pricing_ready"`, `capped_no_deal` → `"cancelled"`.
+- [x] Removed dead `floor > ceiling` branch in `_next_offer`.
 
 ---
 
 # ⚠ Things To Remember
 
-- [ ] `model_used` field still missing from `GemmaCallLog` — add before Mediator Agent starts logging (3rd agent to need it).
-- [ ] `app.py` is stale — will crash if run, don't try to demo it yet.
-- [ ] RLS disabled on all Supabase tables — known, acceptable for now.
+- [ ] `model_used` field still missing from `GemmaCallLog` — add before final submission.
+- [ ] `app.py` is stale placeholder — **rewrite urgently**.
+- [ ] RLS disabled — known, acceptable.
+- [ ] Contract generator doesn't exist yet — needs a home (`tools/contract_generator.py`).
 
 ---
 
 # 💡 Notes For Next Developer
 
-Freelancer Agent + Market Research are fully working but **not pushed anywhere** — check local machine before assuming they don't exist. Don't rebuild them. Mediator Agent's real dependency (`PriceFloor.amount`) will be available the moment this PR merges — confirm with teammate whether they're mocking it or waiting.
+All three agents are stable and tested. Mediator's math is deterministic; any future changes will be caught by `test_negotiation_scenarios.py`. The vague‑brief rehearsal (`test_full_pipeline_vague_brief.py`) is a useful integration test but its numeric outputs will vary due to LLM reasoning – don't hard‑code expectations.
 
 ---
 
 # 📌 First Thing Next Session
 
-**Push Freelancer Agent + Market Research (`git add/commit/push` + PR into upstream). Do not start Mediator Agent or anything else until this PR is open.**
+1. Merge PR #5 (or ask teammate to review).
+2. Sync fork and pull latest `main`.
+3. Start building `app.py` — a simple Streamlit dashboard.
+4. Check in with teammate on contract generator.
+5. Prepare the one‑shot Gemma/Fireworks deployment for tomorrow.
