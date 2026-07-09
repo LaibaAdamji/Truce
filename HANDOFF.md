@@ -238,23 +238,4 @@ Re-run smoke tests after every model swap.
 
 # 💡 Notes For Next Developer
 
-Backend implementation is now largely complete. The focus has shifted away from writing new agent logic and toward integration, verification, and demo preparation.
-
-Avoid rewriting existing agents unless a bug is confirmed. Most remaining work is:
-
-- database permissions,
-- pipeline verification,
-- PR merges,
-- frontend (`app.py`),
-- Fireworks migration,
-- Dockerization.
-
-Whenever resuming work:
-
-1. Pull upstream.
-2. Read `PROJECT_STATE.md`.
-3. Read `ARCHITECTURE.md`.
-4. Read this `HANDOFF.md`.
-5. Run `python run_tests.py` before making changes.
-
-The project is entering the stabilization phase rather than the implementation phase.
+Freelancer Agent and Contract Generator are done and tested — don't rebuild them, just apply the service-role-key fix and push. Treat any claim about Mediator Agent's offer curve as unconfirmed until you've personally diffed `_next_offer()` on `feat/mediator-agent` — the last two descriptions of that function disagree with each other. `app.py` is still the real gap for a demo; nothing else is blocking it from starting once the fork syncs.
