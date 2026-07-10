@@ -7,10 +7,14 @@ Call apply_theme() once at the top of app.py, before anything else renders.
 import streamlit as st
 
 # --- Accent palette (used sparingly: buttons, badges, highlights) ---
-OLIVE = "#BDC749"
-CREAM_ORANGE = "#F8D084"
-BRICK_RED = "#B53209"
-AMBER = "#E59113"
+# Source: latest palette reference (Avocado / Chili Red / Peach).
+# AMBER has no direct match in that reference -- kept as a distinct 4th
+# accent (mid-tone between Peach and Chili Red) since the UI uses 4 status
+# tones. Flag if you'd rather collapse to 3 and repurpose one elsewhere.
+OLIVE = "#72891B"         # was #BDC749 (Avocado)
+CREAM_ORANGE = "#F8D78F"  # was #F8D084 (Peach)
+BRICK_RED = "#CB2602"     # was #B53209 (Chili Red)
+AMBER = "#E08A2B"         # was #E59113 (derived, not in source image)
 
 LIGHT = {
     "bg": "#FAF6EF",
@@ -184,10 +188,10 @@ def apply_theme(mode: str = "light") -> None:
             background: var(--accent-amber);
             color: #FFFFFF !important;
             border: none;
-            box-shadow: 0 2px 8px rgba(229, 145, 19, 0.25);
+            box-shadow: 0 2px 8px rgba(224, 138, 43, 0.25);
         }}
         .stButton > button[kind="primary"]:hover {{
-            box-shadow: 0 4px 16px rgba(229, 145, 19, 0.35);
+            box-shadow: 0 4px 16px rgba(224, 138, 43, 0.35);
             color: #FFFFFF !important;
         }}
 
