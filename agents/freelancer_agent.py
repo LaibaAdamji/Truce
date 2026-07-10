@@ -8,7 +8,7 @@ import json
 import re
 from typing import Any
 from pydantic import ValidationError
-
+from tools.rate_ranking import rank_rate
 from db import operations as db
 from models.schemas import PriceFloor, Comparable
 from tools.llm_client import GemmaCallError, call_gemma
@@ -65,8 +65,17 @@ def compute_price_floor(
             "text": comp["text"],
             "similarity_rank": rank,
         })
+    freelancer = db.get_freelancer_profile(freelancer_profile_id)
+    skill = freelancer["skills"][0] if freelancer and freelancer.get("skills") else "general"
+
+    try:
+        ranking = rank_rate(project_id,floor.amount, skill)
+        print(f"[AMD] Rate ranking: {ranking}")
+    except Exception as e:
+        print(f"[WARN] AMD rate ranking unavailable: {e}")
 
     return floor
+
 
 
 def _call_price_floor_llm(
