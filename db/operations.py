@@ -47,6 +47,10 @@ def save_profile(data: dict) -> dict | None:
 def get_profile(user_id: str) -> dict | None:
     return _get_by_id("profiles", "user_id", user_id)
 
+def get_profile_by_email(email: str) -> dict | None:
+    result = supabase.table("profiles").select("*").eq("email", email).execute()
+    return result.data[0] if result.data else None    
+
 def save_client_profile(data: dict) -> dict | None:
     return _insert("client_profiles", data)
 
@@ -58,6 +62,18 @@ def save_freelancer_profile(data: dict) -> dict | None:
 
 def get_freelancer_profile(freelancer_profile_id: str) -> dict | None:
     return _get_by_id("freelancer_profiles", "freelancer_profile_id", freelancer_profile_id)
+
+def get_client_profile_by_user(user_id: str) -> dict | None:
+    return _get_by_id("client_profiles", "user_id", user_id)
+
+def get_freelancer_profile_by_user(user_id: str) -> dict | None:
+    return _get_by_id("freelancer_profiles", "user_id", user_id)
+
+def get_projects_by_client(client_profile_id: str) -> list[dict]:
+    return _get_all_by_fk("projects", "client_profile_id", client_profile_id)
+
+def get_projects_by_freelancer(freelancer_profile_id: str) -> list[dict]:
+    return _get_all_by_fk("projects", "freelancer_profile_id", freelancer_profile_id)    
 
 
 # ---------------------------------------------------------------------------
@@ -254,14 +270,6 @@ def get_comparables(price_floor_id: str) -> list[dict]:
     )
     return cast(list[dict[str, Any]], result.data) or []
 
-def get_price_floor_by_version(version_id: str):
-    result = (
-        supabase
-        .table("price_floors")
-        .select("*")
-        .eq("version_id", version_id)
-        .execute()
-    )
 
     if result.data:
         return result.data[0]
@@ -403,6 +411,12 @@ def get_contract_by_project(project_id: str) -> dict | None:
     )
     return (cast(list[dict[str, Any]], result.data) or [None])[0]
 
+def get_contract_download_url(storage_path: str, expires_in: int = 60 * 60 * 24 * 7) -> str:
+    signed = supabase.storage.from_("contracts").create_signed_url(storage_path, expires_in)
+    signed_url = signed.get("signedURL") or signed.get("signedUrl")
+    if not signed_url:
+        raise RuntimeError(f"Unexpected signed URL response shape: {signed}")
+    return signed_url
 
 # ---------------------------------------------------------------------------
 # Notifications
