@@ -270,14 +270,6 @@ def get_comparables(price_floor_id: str) -> list[dict]:
     )
     return cast(list[dict[str, Any]], result.data) or []
 
-def get_price_floor_by_version(version_id: str):
-    result = (
-        supabase
-        .table("price_floors")
-        .select("*")
-        .eq("version_id", version_id)
-        .execute()
-    )
 
     if result.data:
         return result.data[0]
@@ -419,6 +411,12 @@ def get_contract_by_project(project_id: str) -> dict | None:
     )
     return (cast(list[dict[str, Any]], result.data) or [None])[0]
 
+def get_contract_download_url(storage_path: str, expires_in: int = 60 * 60 * 24 * 7) -> str:
+    signed = supabase.storage.from_("contracts").create_signed_url(storage_path, expires_in)
+    signed_url = signed.get("signedURL") or signed.get("signedUrl")
+    if not signed_url:
+        raise RuntimeError(f"Unexpected signed URL response shape: {signed}")
+    return signed_url
 
 # ---------------------------------------------------------------------------
 # Notifications
